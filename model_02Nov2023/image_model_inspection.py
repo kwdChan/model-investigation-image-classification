@@ -137,7 +137,7 @@ class ImageModelInspector:
         ):
         use_ds = self.test_ds if not from_ds == 'train' else self.train_ds
         ds_iter = iter(use_ds)
-
+        # TODO: no need to do iter?
         for x, y_real in ds_iter:
             
             y_pred_prob = self.model(x[None, ...])
@@ -152,6 +152,13 @@ class ImageModelInspector:
     @cache
     def y_pred(self, from_ds: Literal['test', 'train'] = 'test'):
         return tf.argmax(self.y_pred_prob(from_ds), axis=1)
+    
+    def y_true(self, from_ds: Literal['test', 'train'] = 'test'):
+        use_ds = self.test_ds if not from_ds == 'train' else self.train_ds
+        
+        return np.array(list(use_ds.map(lambda x, y: y).as_numpy_iterator()))
+        
+
 
     @cache
     def confusion_matrix(
@@ -198,6 +205,16 @@ class ImageModelInspector:
         if normalise:
             counts = counts/counts.sum(0)
         return counts
+    
+    def loss_by_category(self, from_ds: Literal['test', 'train'] = 'test'):
+        y_true = self.y_true(from_ds)
+        y_pred_prob = self.y_pred_prob(from_ds)
+        
+        loss_byC = {}
+        for c_ in range(len(np.unique(y_true))):
+            bIdx = (y_true == c_)
+            loss_byC[self.labels[c_]] = self.model.loss(y_true[bIdx], y_pred_prob[bIdx]).numpy()
+        return pd.Series(loss_byC, name='loss').sort_values(ascending=False)
     
     def get_filter_layers(self):
         return [l for l in self.model.layers if len(l.output.shape) > 2]
