@@ -17,7 +17,7 @@ def vis_one_example(x):
     return img.opts(frame_width=350, frame_height=350)
 
 def hv_class_prob(y_pred, all_labels, yaxis='prob', xaxis='class', true_label_index = 0):
-    all_bar = hv.Bars((all_labels, y_pred), xaxis, yaxis).opts(xrotation=45, width=600).sort(yaxis, reverse=True)
+    all_bar = hv.Bars((all_labels, y_pred), xaxis, yaxis).opts(xrotation=90, width=600).sort(yaxis, reverse=True)
     if not true_label_index is None: 
         highlighted_bar = hv.Bars(([all_labels[true_label_index]], [y_pred[true_label_index]]), xaxis, yaxis).opts(color='red')
         return all_bar*highlighted_bar
@@ -298,5 +298,4 @@ class ImageModelInspector:
         filter_gens = [self.show_filter_images(i) for i in range(len(self.get_filter_layers()))]
         all_gens = [origin_gen, img_rgb_gen] + filter_gens
 
-        while True:
-            yield hv.Layout([next(gen_) for gen_ in all_gens]).cols(1)
+        return (lambda: hv.Layout([next(gen_) for gen_ in all_gens]).cols(1))

@@ -93,3 +93,38 @@ Epoch 50/50
     - perhaps do PCA weights or outputs of the dense layer
 - of those 500 units in the dense layer, 140 of those aren't active in all the testing data
     - how about the training data? 
+
+
+# Key visualisations
+**An example of the prediction drawn from the test split:**
+![result_plot](./img/result_plot.png)
+
+**The percentage of prediction for each category**
+![prediction_bias_plot](./img/prediction_bias_plot.png)
+All the categories have equal occurance in the data. An uneven prediction occurance is indicative of poor performance. Both the testing and training predictions have biases to similar categories but the bias is stronger in the testing predictions. 
+
+**The loss for each category (true category)**
+![loss_by_category_plot](./img/loss_by_category_plot.png)
+The training loss is much smaller than the testing loss due to overfitting. The losses of the testing and training results follow similar trend. The model performs the poorest for trees and large_natural_outdoor_scences. 
+
+
+**The confusion matrix with the diagonal eye masked:**
+![confusion_matrix_plot](./img/confusion_matrix_plot.png)
+Fish and aquatic mammals are confused
+The model tends to categorised images as small mammals and reptiles for some reasons. 
+
+**The response summary of the units in the second last dense layer**
+![unit_response_summary](./img/unit_response_summary.png)
+- A lot of units (122 of 500) are completely inactive. The very 0 mean and 0 std. 
+    - I tried anther model with only 256 units at this layer. Still there were a lot of inactive units. I guess that's because I'm using relu? 
+- Very surprisingly (to me), the units have very similar responses statistics to the training and testing data. 
+    - Should look into the response distribution of each unit
+- Medians are always 0 (not shown here). The responses are very sparse. 
+
+
+
+**An example of filter images in the model**
+![filter_image_plot](./img/filter_image_plot.png)
+- There're colour selectivity and orientation selectivity
+- 8 filters aren't enough for the first layer for both orientations and colours
+- I don't see the effect of the dropout layers
