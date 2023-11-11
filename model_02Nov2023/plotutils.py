@@ -1,6 +1,7 @@
 
 import panel as pn
 import holoviews as hv
+import numpy as np
 
 def hvDyn(**kdimValues):
     """
@@ -18,3 +19,7 @@ def hvDyn(**kdimValues):
 
 def serve(plot): 
     return pn.serve(plot)
+
+
+def histo(values, bins, dims=['x', 'freq']):
+    return hv.Histogram(np.histogram(values, bins=bins), kdims=dims[0], vdims=dims[1])
