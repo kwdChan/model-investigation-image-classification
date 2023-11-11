@@ -1,6 +1,6 @@
 # Investigate different image classification models
 
-## Goal
+## Goals
 **To evaluate and investigate the model:**
 - Are there some classes tend to be confused with another?
 - Visualise the convoluted images
